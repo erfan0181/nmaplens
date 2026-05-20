@@ -4,9 +4,14 @@
 ![Python](https://img.shields.io/badge/python-3.10%2B-blue)
 ![License](https://img.shields.io/badge/license-MIT-green)
 
-NmapLens is a beginner-friendly but professional Python command-line tool that reads Nmap XML scan results and generates HTML, JSON, and Markdown security reports.
+NmapLens is a beginner-friendly but professional Python command-line tool that reads Nmap XML scan results and generates HTML, JSON, Markdown, PDF, and local dashboard views.
 
-![NmapLens report preview](docs/report-preview.svg)
+![NmapLens dashboard overview](docs/dashboard-overview.png)
+
+## Dashboard Preview
+
+![NmapLens host explorer](docs/dashboard-hosts.png)
+![NmapLens CVE and Exploit-DB references](docs/dashboard-cve-links.png)
 
 ## Why NmapLens
 
