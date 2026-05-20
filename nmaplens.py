@@ -25,6 +25,11 @@ def build_argument_parser() -> argparse.ArgumentParser:
         "--baseline",
         help="Path to an older Nmap XML scan file for comparison against the current scan",
     )
+    parser.add_argument(
+        "--compare-only",
+        action="store_true",
+        help="Show only scan differences when used with --baseline",
+    )
     parser.add_argument("--verbose", action="store_true", help="Print host details to the console")
     parser.add_argument(
         "--summary-only",
@@ -46,6 +51,10 @@ def main() -> int:
         if args.baseline:
             baseline_data = parse_nmap_xml(args.baseline)
             scan_data["comparison"] = build_scan_diff(baseline_data["hosts"], scan_data["hosts"])
+        if args.compare_only:
+            if not args.baseline:
+                raise ValueError("--compare-only requires --baseline")
+            scan_data["comparison_only"] = True
     except FileNotFoundError:
         print(f"Error: Input file not found: {args.input}", file=sys.stderr)
         return 1

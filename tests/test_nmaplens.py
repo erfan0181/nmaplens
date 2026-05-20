@@ -77,6 +77,50 @@ class NmapLensTests(unittest.TestCase):
         self.assertEqual(comparison["changed_hosts"][0]["ip_address"], "192.168.1.10")
         self.assertEqual(comparison["changed_hosts"][0]["added_ports"][0]["port"], 445)
 
+    def test_compare_only_requires_baseline(self) -> None:
+        result = subprocess.run(
+            [
+                "python3",
+                str(PROJECT_ROOT / "nmaplens.py"),
+                "--input",
+                str(SAMPLE_SCAN),
+                "--compare-only",
+            ],
+            cwd=PROJECT_ROOT,
+            capture_output=True,
+            text=True,
+            check=False,
+        )
+
+        self.assertNotEqual(result.returncode, 0)
+        self.assertIn("--compare-only requires --baseline", result.stderr)
+
+    def test_compare_only_json_includes_comparison_flag(self) -> None:
+        with tempfile.TemporaryDirectory() as tmpdir:
+            output_path = Path(tmpdir) / "diff.json"
+            result = subprocess.run(
+                [
+                    "python3",
+                    str(PROJECT_ROOT / "nmaplens.py"),
+                    "--baseline",
+                    str(BASELINE_SCAN),
+                    "--input",
+                    str(SAMPLE_SCAN),
+                    "--compare-only",
+                    "--json",
+                    str(output_path),
+                ],
+                cwd=PROJECT_ROOT,
+                capture_output=True,
+                text=True,
+                check=False,
+            )
+
+            self.assertEqual(result.returncode, 0, msg=result.stderr)
+            payload = json.loads(output_path.read_text(encoding="utf-8"))
+            self.assertTrue(payload["comparison_only"])
+            self.assertEqual(payload["comparison"]["added_hosts"], ["192.168.1.20"])
+
 
 if __name__ == "__main__":
     unittest.main()

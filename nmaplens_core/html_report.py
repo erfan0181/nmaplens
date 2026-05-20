@@ -14,6 +14,7 @@ def build_html_report(scan_data: dict[str, object]) -> str:
     summary = scan_data["summary"]
     hosts = scan_data["hosts"]
     comparison = scan_data.get("comparison")
+    comparison_only = bool(scan_data.get("comparison_only"))
 
     summary_cards = "".join(
         _summary_card(title, value)
@@ -31,6 +32,13 @@ def build_html_report(scan_data: dict[str, object]) -> str:
     common_ports = ", ".join(f"{port} ({count})" for port, count in summary["most_common_open_ports"]) or "None"
     common_services = ", ".join(f"{service} ({count})" for service, count in summary["most_common_services"]) or "None"
     comparison_panel = _build_comparison_panel(comparison)
+    summary_section = "" if comparison_only else f"""
+    <section class="grid">{summary_cards}</section>
+    <section class="panel">
+      <h2>Host Findings</h2>
+      {host_sections}
+    </section>
+"""
 
     return f"""<!DOCTYPE html>
 <html lang="en">
@@ -113,11 +121,7 @@ def build_html_report(scan_data: dict[str, object]) -> str:
       <p class="meta">Most common open ports: {escape(common_ports)}</p>
       <p class="meta">Most common services: {escape(common_services)}</p>
     </section>
-    <section class="grid">{summary_cards}</section>
-    <section class="panel">
-      <h2>Host Findings</h2>
-      {host_sections}
-    </section>
+    {summary_section}
     {comparison_panel}
     <p class="footer">{escape(DISCLAIMER)}</p>
   </div>
@@ -198,6 +202,8 @@ def _build_comparison_panel(comparison: dict[str, object] | None) -> str:
     return f"""
     <section class="panel">
       <h2>Scan Comparison</h2>
+      <p class="meta">Baseline hosts: {comparison['baseline_host_count']}</p>
+      <p class="meta">Current hosts: {comparison['current_host_count']}</p>
       <p class="meta">Added hosts: {escape(', '.join(comparison['added_hosts']) or 'None')}</p>
       <p class="meta">Removed hosts: {escape(', '.join(comparison['removed_hosts']) or 'None')}</p>
       <table>

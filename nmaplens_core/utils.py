@@ -46,6 +46,18 @@ def format_console_summary(scan_data: dict[str, object], *, verbose: bool, summa
     summary = scan_data["summary"]
     hosts = scan_data["hosts"]
     comparison = scan_data.get("comparison")
+    comparison_only = bool(scan_data.get("comparison_only"))
+
+    if comparison_only:
+        lines = [
+            "NmapLens Comparison",
+            f"Scanner: {metadata['scanner']} {metadata['version']}",
+            f"Scan start: {metadata['start_time']}",
+        ]
+        if comparison:
+            lines.extend(_format_comparison_lines(comparison))
+        lines.extend(["", DISCLAIMER])
+        return "\n".join(lines)
 
     lines = [
         "NmapLens Summary",
@@ -97,6 +109,8 @@ def _format_comparison_lines(comparison: dict[str, object]) -> list[str]:
     lines = [
         "",
         "Comparison",
+        f"Baseline hosts: {comparison['baseline_host_count']}",
+        f"Current hosts: {comparison['current_host_count']}",
         f"Added hosts: {', '.join(comparison['added_hosts']) or 'None'}",
         f"Removed hosts: {', '.join(comparison['removed_hosts']) or 'None'}",
     ]

@@ -7,6 +7,7 @@ All notable changes to this project will be documented in this file.
 ### Added
 
 - Baseline scan comparison with `--baseline`
+- Compare-only mode with `--compare-only`
 - Console, JSON, HTML, and Markdown comparison summaries
 - Sample baseline XML and automated tests for scan diffs
 

@@ -12,6 +12,7 @@ def build_markdown_report(scan_data: dict[str, object]) -> str:
     summary = scan_data["summary"]
     hosts = scan_data["hosts"]
     comparison = scan_data.get("comparison")
+    comparison_only = bool(scan_data.get("comparison_only"))
 
     lines = [
         "# NmapLens Report",
@@ -20,16 +21,6 @@ def build_markdown_report(scan_data: dict[str, object]) -> str:
         "",
         f"- Scanner: {metadata['scanner']} {metadata['version']}",
         f"- Scan start: {metadata['start_time']}",
-        f"- Total hosts: {summary['total_hosts']}",
-        f"- Online hosts: {summary['online_hosts']}",
-        f"- Total open ports: {summary['total_open_ports']}",
-        f"- Low risk hosts: {summary['risk_counts']['Low']}",
-        f"- Medium risk hosts: {summary['risk_counts']['Medium']}",
-        f"- High risk hosts: {summary['risk_counts']['High']}",
-        f"- Critical risk hosts: {summary['risk_counts']['Critical']}",
-        "",
-        "## Host List",
-        "",
     ]
 
     if comparison:
@@ -37,12 +28,33 @@ def build_markdown_report(scan_data: dict[str, object]) -> str:
             [
                 "## Scan Comparison",
                 "",
+                f"- Baseline hosts: {comparison['baseline_host_count']}",
+                f"- Current hosts: {comparison['current_host_count']}",
                 f"- Added hosts: {', '.join(comparison['added_hosts']) or 'None'}",
                 f"- Removed hosts: {', '.join(comparison['removed_hosts']) or 'None'}",
                 f"- Changed hosts: {len(comparison['changed_hosts'])}",
                 "",
             ]
         )
+
+    if comparison_only:
+        lines.extend(["## Disclaimer", "", DISCLAIMER, ""])
+        return "\n".join(lines)
+
+    lines.extend(
+        [
+            f"- Total hosts: {summary['total_hosts']}",
+            f"- Online hosts: {summary['online_hosts']}",
+            f"- Total open ports: {summary['total_open_ports']}",
+            f"- Low risk hosts: {summary['risk_counts']['Low']}",
+            f"- Medium risk hosts: {summary['risk_counts']['Medium']}",
+            f"- High risk hosts: {summary['risk_counts']['High']}",
+            f"- Critical risk hosts: {summary['risk_counts']['Critical']}",
+            "",
+            "## Host List",
+            "",
+        ]
+    )
 
     for host in hosts:
         lines.append(f"- {host['ip_address']} ({host['risk_level']}, score {host['risk_score']})")

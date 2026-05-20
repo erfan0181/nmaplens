@@ -88,6 +88,16 @@ python3 nmaplens.py \
   --summary-only
 ```
 
+Compare only the scan differences:
+
+```bash
+python3 nmaplens.py \
+  --baseline examples/sample_scan_baseline.xml \
+  --input examples/sample_scan.xml \
+  --compare-only \
+  --json output/diff.json
+```
+
 ## Example Nmap Scan Command
 
 ```bash
