@@ -1,0 +1,23 @@
+<?xml version="1.0"?>
+<nmaprun scanner="nmap" args="nmap -sV -O -oX sample_scan_baseline.xml 192.168.1.10" start="1716117600" startstr="2026-05-19 12:00 UTC" version="7.95">
+  <host>
+    <status state="up" reason="syn-ack"/>
+    <address addr="192.168.1.10" addrtype="ipv4"/>
+    <hostnames>
+      <hostname name="gateway.local" type="PTR"/>
+    </hostnames>
+    <ports>
+      <port protocol="tcp" portid="22">
+        <state state="open"/>
+        <service name="ssh" product="OpenSSH" version="9.6"/>
+      </port>
+      <port protocol="tcp" portid="80">
+        <state state="open"/>
+        <service name="http" product="nginx" version="1.24.0"/>
+      </port>
+    </ports>
+    <os>
+      <osmatch name="Linux 6.x" accuracy="98"/>
+    </os>
+  </host>
+</nmaprun>

@@ -13,6 +13,7 @@ def build_html_report(scan_data: dict[str, object]) -> str:
     metadata = scan_data["scan_metadata"]
     summary = scan_data["summary"]
     hosts = scan_data["hosts"]
+    comparison = scan_data.get("comparison")
 
     summary_cards = "".join(
         _summary_card(title, value)
@@ -29,6 +30,7 @@ def build_html_report(scan_data: dict[str, object]) -> str:
     host_sections = "".join(_build_host_section(host) for host in hosts)
     common_ports = ", ".join(f"{port} ({count})" for port, count in summary["most_common_open_ports"]) or "None"
     common_services = ", ".join(f"{service} ({count})" for service, count in summary["most_common_services"]) or "None"
+    comparison_panel = _build_comparison_panel(comparison)
 
     return f"""<!DOCTYPE html>
 <html lang="en">
@@ -116,6 +118,7 @@ def build_html_report(scan_data: dict[str, object]) -> str:
       <h2>Host Findings</h2>
       {host_sections}
     </section>
+    {comparison_panel}
     <p class="footer">{escape(DISCLAIMER)}</p>
   </div>
 </body>
@@ -164,4 +167,44 @@ def _build_host_section(host: dict[str, object]) -> str:
   <h3>Recommended Next Steps</h3>
   <ul>{recommendations}</ul>
 </details>
+"""
+
+
+def _build_comparison_panel(comparison: dict[str, object] | None) -> str:
+    if not comparison:
+        return ""
+
+    changed_rows = []
+    for host in comparison["changed_hosts"]:
+        added = ", ".join(
+            f"{port['port']}/{port['protocol']} {port['service']}" for port in host["added_ports"]
+        ) or "None"
+        removed = ", ".join(
+            f"{port['port']}/{port['protocol']} {port['service']}" for port in host["removed_ports"]
+        ) or "None"
+        service_changes = ", ".join(
+            f"{item['port']}/{item['protocol']}: {item['before']} -> {item['after']}"
+            for item in host["service_changes"]
+        ) or "None"
+        changed_rows.append(
+            "<tr>"
+            f"<td>{escape(str(host['ip_address']))}</td>"
+            f"<td>{escape(added)}</td>"
+            f"<td>{escape(removed)}</td>"
+            f"<td>{escape(service_changes)}</td>"
+            "</tr>"
+        )
+
+    return f"""
+    <section class="panel">
+      <h2>Scan Comparison</h2>
+      <p class="meta">Added hosts: {escape(', '.join(comparison['added_hosts']) or 'None')}</p>
+      <p class="meta">Removed hosts: {escape(', '.join(comparison['removed_hosts']) or 'None')}</p>
+      <table>
+        <thead>
+          <tr><th>Host</th><th>Added Ports</th><th>Removed Ports</th><th>Service Changes</th></tr>
+        </thead>
+        <tbody>{''.join(changed_rows) or '<tr><td colspan="4">No host-level port changes detected.</td></tr>'}</tbody>
+      </table>
+    </section>
 """

@@ -45,6 +45,7 @@ def format_console_summary(scan_data: dict[str, object], *, verbose: bool, summa
     metadata = scan_data["scan_metadata"]
     summary = scan_data["summary"]
     hosts = scan_data["hosts"]
+    comparison = scan_data.get("comparison")
 
     lines = [
         "NmapLens Summary",
@@ -63,6 +64,8 @@ def format_console_summary(scan_data: dict[str, object], *, verbose: bool, summa
     ]
 
     if summary_only:
+        if comparison:
+            lines.extend(_format_comparison_lines(comparison))
         lines.extend(["", DISCLAIMER])
         return "\n".join(lines)
 
@@ -83,5 +86,37 @@ def format_console_summary(scan_data: dict[str, object], *, verbose: bool, summa
                 ]
             )
 
+    if comparison:
+        lines.extend(_format_comparison_lines(comparison))
+
     lines.extend(["", DISCLAIMER])
     return "\n".join(lines)
+
+
+def _format_comparison_lines(comparison: dict[str, object]) -> list[str]:
+    lines = [
+        "",
+        "Comparison",
+        f"Added hosts: {', '.join(comparison['added_hosts']) or 'None'}",
+        f"Removed hosts: {', '.join(comparison['removed_hosts']) or 'None'}",
+    ]
+    for host in comparison["changed_hosts"]:
+        added = ", ".join(
+            f"{port['port']}/{port['protocol']} {port['service']}" for port in host["added_ports"]
+        ) or "None"
+        removed = ", ".join(
+            f"{port['port']}/{port['protocol']} {port['service']}" for port in host["removed_ports"]
+        ) or "None"
+        service_changes = ", ".join(
+            f"{item['port']}/{item['protocol']}: {item['before']} -> {item['after']}"
+            for item in host["service_changes"]
+        ) or "None"
+        lines.extend(
+            [
+                f"Host changes: {host['ip_address']}",
+                f"  Added ports: {added}",
+                f"  Removed ports: {removed}",
+                f"  Service changes: {service_changes}",
+            ]
+        )
+    return lines

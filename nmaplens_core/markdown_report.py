@@ -11,6 +11,7 @@ def build_markdown_report(scan_data: dict[str, object]) -> str:
     metadata = scan_data["scan_metadata"]
     summary = scan_data["summary"]
     hosts = scan_data["hosts"]
+    comparison = scan_data.get("comparison")
 
     lines = [
         "# NmapLens Report",
@@ -30,6 +31,18 @@ def build_markdown_report(scan_data: dict[str, object]) -> str:
         "## Host List",
         "",
     ]
+
+    if comparison:
+        lines.extend(
+            [
+                "## Scan Comparison",
+                "",
+                f"- Added hosts: {', '.join(comparison['added_hosts']) or 'None'}",
+                f"- Removed hosts: {', '.join(comparison['removed_hosts']) or 'None'}",
+                f"- Changed hosts: {len(comparison['changed_hosts'])}",
+                "",
+            ]
+        )
 
     for host in hosts:
         lines.append(f"- {host['ip_address']} ({host['risk_level']}, score {host['risk_score']})")

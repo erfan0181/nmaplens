@@ -20,6 +20,7 @@ Nmap XML output is powerful, but it is not always easy to read quickly, especial
 - Explain risk reasons in plain language
 - Suggest useful next-step Nmap commands
 - Generate offline HTML, JSON, and Markdown reports
+- Compare a new scan against an older baseline
 - Produce a summary of common ports and services
 - Use Python standard library only
 
@@ -29,6 +30,15 @@ Nmap XML output is powerful, but it is not always easy to read quickly, especial
 git clone https://github.com/erfan0181/nmaplens.git
 cd nmaplens
 python3 nmaplens.py --input examples/sample_scan.xml --html output/report.html --json output/report.json --markdown output/report.md
+```
+
+Quick compare run:
+
+```bash
+python3 nmaplens.py \
+  --baseline examples/sample_scan_baseline.xml \
+  --input examples/sample_scan.xml \
+  --json output/report.json
 ```
 
 ## Installation
@@ -67,6 +77,15 @@ Verbose console output:
 
 ```bash
 python3 nmaplens.py --input examples/sample_scan.xml --verbose
+```
+
+Compare two scans:
+
+```bash
+python3 nmaplens.py \
+  --baseline examples/sample_scan_baseline.xml \
+  --input examples/sample_scan.xml \
+  --summary-only
 ```
 
 ## Example Nmap Scan Command
@@ -111,13 +130,15 @@ nmaplens/
 ├── README.md
 ├── requirements.txt
 ├── examples/
-│   └── sample_scan.xml
+│   ├── sample_scan.xml
+│   └── sample_scan_baseline.xml
 ├── output/
 │   ├── report.html
 │   ├── report.json
 │   └── report.md
 └── nmaplens_core/
     ├── __init__.py
+    ├── compare.py
     ├── parser.py
     ├── risk.py
     ├── recommendations.py
@@ -131,7 +152,6 @@ nmaplens/
 
 - CVE lookup using CPE
 - Web dashboard
-- Compare two scans
 - PDF export
 - Network graph
 - Screenshot capture for web services

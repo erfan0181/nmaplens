@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.2.0] - Unreleased
+
+### Added
+
+- Baseline scan comparison with `--baseline`
+- Console, JSON, HTML, and Markdown comparison summaries
+- Sample baseline XML and automated tests for scan diffs
+
 ## [0.1.0] - 2026-05-20
 
 ### Added

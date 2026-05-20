@@ -6,6 +6,7 @@ import tempfile
 import unittest
 from pathlib import Path
 
+from nmaplens_core.compare import build_scan_diff
 from nmaplens_core.parser import parse_nmap_xml
 from nmaplens_core.recommendations import enrich_recommendations
 from nmaplens_core.risk import enrich_risk
@@ -14,6 +15,7 @@ from nmaplens_core.utils import build_summary
 
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
 SAMPLE_SCAN = PROJECT_ROOT / "examples" / "sample_scan.xml"
+BASELINE_SCAN = PROJECT_ROOT / "examples" / "sample_scan_baseline.xml"
 
 
 class NmapLensTests(unittest.TestCase):
@@ -62,6 +64,18 @@ class NmapLensTests(unittest.TestCase):
             payload = json.loads(output_path.read_text(encoding="utf-8"))
             self.assertEqual(payload["summary"]["total_hosts"], 2)
             self.assertEqual(payload["hosts"][1]["risk_score"], 65)
+
+    def test_compare_detects_host_and_port_changes(self) -> None:
+        baseline_data = parse_nmap_xml(BASELINE_SCAN)
+        current_data = parse_nmap_xml(SAMPLE_SCAN)
+
+        comparison = build_scan_diff(baseline_data["hosts"], current_data["hosts"])
+
+        self.assertEqual(comparison["added_hosts"], ["192.168.1.20"])
+        self.assertEqual(comparison["removed_hosts"], [])
+        self.assertEqual(len(comparison["changed_hosts"]), 1)
+        self.assertEqual(comparison["changed_hosts"][0]["ip_address"], "192.168.1.10")
+        self.assertEqual(comparison["changed_hosts"][0]["added_ports"][0]["port"], 445)
 
 
 if __name__ == "__main__":
