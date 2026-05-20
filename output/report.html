@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>NmapLens Report</title>
+  <style>
+    :root {
+      --bg: #09111b;
+      --panel: #111927;
+      --panel-alt: #182230;
+      --border: #2b3848;
+      --text: #edf2f7;
+      --muted: #9fb0c3;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+      color: var(--text);
+      background:
+        radial-gradient(circle at top left, rgba(76, 201, 240, 0.18), transparent 28%),
+        radial-gradient(circle at top right, rgba(255, 77, 109, 0.12), transparent 22%),
+        var(--bg);
+    }
+    .container {
+      width: min(1180px, calc(100% - 32px));
+      margin: 0 auto;
+      padding: 32px 0 48px;
+    }
+    .panel {
+      background: rgba(17, 25, 39, 0.92);
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      padding: 24px;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.28);
+    }
+    .hero h1 { margin: 0 0 8px; }
+    .meta { color: var(--muted); margin: 6px 0; }
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+      gap: 16px;
+      margin: 22px 0;
+    }
+    .card {
+      background: linear-gradient(180deg, rgba(255,255,255,0.03), rgba(76,201,240,0.10));
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 16px;
+    }
+    .label { color: var(--muted); font-size: 0.9rem; }
+    .value { font-size: 1.8rem; font-weight: 700; margin-top: 8px; }
+    details {
+      background: var(--panel-alt);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 16px;
+      margin-top: 14px;
+    }
+    summary { cursor: pointer; font-weight: 700; }
+    table { width: 100%; border-collapse: collapse; margin-top: 12px; }
+    th, td { text-align: left; padding: 10px 12px; border-bottom: 1px solid var(--border); vertical-align: top; }
+    .badge { display: inline-block; padding: 4px 10px; border-radius: 999px; font-size: 0.85rem; font-weight: 700; }
+    .Low { background: rgba(46,160,67,0.18); color: #7ee787; }
+    .Medium { background: rgba(210,153,34,0.18); color: #f2cc60; }
+    .High { background: rgba(248,81,73,0.18); color: #ff938a; }
+    .Critical { background: rgba(255,77,109,0.18); color: #ff92a8; }
+    code { background: rgba(159,176,195,0.12); border-radius: 8px; padding: 2px 6px; }
+    .footer { color: var(--muted); margin-top: 20px; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <section class="panel hero">
+      <h1>NmapLens Report</h1>
+      <p class="meta">Scanner: nmap 7.95</p>
+      <p class="meta">Scan start: 2026-05-20 12:00 UTC</p>
+      <p class="meta">Most common open ports: 22 (1), 80 (1), 445 (1), 21 (1), 23 (1)</p>
+      <p class="meta">Most common services: ssh (1), http (1), microsoft-ds (1), ftp (1), telnet (1)</p>
+    </section>
+    <section class="grid"><div class="card"><div class="label">Total Hosts</div><div class="value">2</div></div><div class="card"><div class="label">Online Hosts</div><div class="value">2</div></div><div class="card"><div class="label">Open Ports</div><div class="value">6</div></div><div class="card"><div class="label">Critical Hosts</div><div class="value">0</div></div><div class="card"><div class="label">High Hosts</div><div class="value">1</div></div><div class="card"><div class="label">Medium Hosts</div><div class="value">1</div></div><div class="card"><div class="label">Low Hosts</div><div class="value">0</div></div></section>
+    <section class="panel">
+      <h2>Host Findings</h2>
+      
+<details>
+  <summary>192.168.1.10 - <span class="badge Medium">Medium</span></summary>
+  <p class="meta">Hostname: gateway.local</p>
+  <p class="meta">Status: up</p>
+  <p class="meta">MAC address: 00:11:22:33:44:55</p>
+  <p class="meta">Vendor: Intel</p>
+  <p class="meta">OS guess: Linux 6.x</p>
+  <p class="meta">Risk score: 35</p>
+  <table><thead><tr><th>Port</th><th>Service</th><th>Details</th><th>CPE</th></tr></thead><tbody><tr><td>22/tcp</td><td>ssh</td><td>OpenSSH 9.6 protocol 2.0</td><td>cpe:/a:openbsd:openssh:9.6</td></tr><tr><td>80/tcp</td><td>http</td><td>nginx 1.24.0</td><td>cpe:/a:nginx:nginx:1.24.0</td></tr><tr><td>445/tcp</td><td>microsoft-ds</td><td>Samba smbd 4.18.0</td><td>N/A</td></tr></tbody></table>
+  <h3>Risk Reasons</h3>
+  <ul><li>SSH should be restricted to trusted administrative networks.</li><li>HTTP traffic is not encrypted.</li><li>SMB exposure can increase lateral movement risk.</li></ul>
+  <h3>Recommended Next Steps</h3>
+  <ul><li><code>nmap --script ssh2-enum-algos -p22 192.168.1.10</code></li><li><code>nmap --script http-title,http-headers,http-methods -p80 192.168.1.10</code></li><li><code>nmap --script smb-enum-shares,smb-os-discovery,smb-protocols -p445 192.168.1.10</code></li></ul>
+</details>
+
+<details>
+  <summary>192.168.1.20 - <span class="badge High">High</span></summary>
+  <p class="meta">Hostname: N/A</p>
+  <p class="meta">Status: up</p>
+  <p class="meta">MAC address: N/A</p>
+  <p class="meta">Vendor: N/A</p>
+  <p class="meta">OS guess: Microsoft Windows 10 or 11</p>
+  <p class="meta">Risk score: 65</p>
+  <table><thead><tr><th>Port</th><th>Service</th><th>Details</th><th>CPE</th></tr></thead><tbody><tr><td>21/tcp</td><td>ftp</td><td>vsftpd 3.0.5</td><td>N/A</td></tr><tr><td>23/tcp</td><td>telnet</td><td>BusyBox telnetd</td><td>N/A</td></tr><tr><td>3389/tcp</td><td>ms-wbt-server</td><td>Microsoft Terminal Services</td><td>N/A</td></tr></tbody></table>
+  <h3>Risk Reasons</h3>
+  <ul><li>FTP may expose credentials if not protected.</li><li>Telnet is exposed and uses clear-text communication.</li><li>RDP should be protected with VPN, MFA, and strict access control.</li></ul>
+  <h3>Recommended Next Steps</h3>
+  <ul><li><code>nmap --script ftp-anon,ftp-syst -p21 192.168.1.20</code></li><li><code>nmap -sV -p23 192.168.1.20</code></li><li><code>nmap --script rdp-enum-encryption -p3389 192.168.1.20</code></li></ul>
+</details>
+
+    </section>
+    <p class="footer">This tool is intended for educational and authorized security testing only. Only scan systems you own or have explicit permission to test.</p>
+  </div>
+</body>
+</html>

@@ -1,0 +1,233 @@
+Build a complete Python open-source project called NmapLens.
+
+Project goal:
+NmapLens is a command-line security reporting tool that reads Nmap XML scan results and generates professional HTML, JSON, and Markdown reports. It should help beginners and junior pentesters understand open ports, exposed services, risk levels, and recommended next steps.
+
+Important rules:
+- Do not use Persian words anywhere in the code.
+- Do not use Persian words in comments, variable names, filenames, output strings, README, or documentation.
+- Use simple and clean Python.
+- Prefer Python standard library only.
+- Keep the project beginner-friendly but professional.
+- Add clear error handling.
+- Add a security disclaimer.
+
+Project structure:
+nmaplens/
+├── nmaplens.py
+├── README.md
+├── requirements.txt
+├── examples/
+│   └── sample_scan.xml
+├── output/
+│   ├── report.html
+│   ├── report.json
+│   └── report.md
+└── nmaplens_core/
+    ├── __init__.py
+    ├── parser.py
+    ├── risk.py
+    ├── recommendations.py
+    ├── html_report.py
+    ├── json_report.py
+    ├── markdown_report.py
+    └── utils.py
+
+CLI requirements:
+The tool should support:
+
+python3 nmaplens.py --input scan.xml
+
+Optional arguments:
+--html output/report.html
+--json output/report.json
+--markdown output/report.md
+--verbose
+--summary-only
+
+Example:
+python3 nmaplens.py --input scan.xml --html output/report.html --json output/report.json --markdown output/report.md
+
+Step 1: XML parser
+Parse the Nmap XML file and extract:
+- Scan start time if available
+- Scanner version if available
+- Host IP address
+- Hostname if available
+- Host status
+- MAC address if available
+- Vendor if available
+- OS guess if available
+- Open ports
+- Protocol
+- Port number
+- Service name
+- Product
+- Version
+- Extra info
+- CPE values if available
+
+Step 2: Risk scoring
+Create a risk score for each host based on exposed services.
+
+Base risk values:
+- Telnet: +30
+- SMB: +25
+- RDP: +20
+- FTP: +15
+- VNC: +15
+- MySQL: +10
+- PostgreSQL: +10
+- MongoDB: +15
+- Redis: +15
+- Elasticsearch: +15
+- HTTP: +5
+- HTTPS: +3
+- SSH: +5
+
+Risk levels:
+- 0-14: Low
+- 15-39: Medium
+- 40-69: High
+- 70+: Critical
+
+Step 3: Risk reasons
+For every host, include clear risk reasons.
+
+Examples:
+- Telnet is exposed and uses clear-text communication.
+- FTP may expose credentials if not protected.
+- SMB exposure can increase lateral movement risk.
+- RDP should be protected with VPN, MFA, and strict access control.
+- Database services should not be exposed to untrusted networks.
+- HTTP traffic is not encrypted.
+
+Step 4: Recommended next Nmap commands
+For each detected service, suggest useful next commands.
+
+Examples:
+For SMB:
+nmap --script smb-enum-shares,smb-os-discovery,smb-protocols -p445 TARGET
+
+For HTTP:
+nmap --script http-title,http-headers,http-methods -p80 TARGET
+
+For SSH:
+nmap --script ssh2-enum-algos -p22 TARGET
+
+For FTP:
+nmap --script ftp-anon,ftp-syst -p21 TARGET
+
+For RDP:
+nmap --script rdp-enum-encryption -p3389 TARGET
+
+For databases:
+nmap -sV -pPORT TARGET
+
+Step 5: Report summary
+Generate a summary containing:
+- Total hosts
+- Online hosts
+- Total open ports
+- Number of Low risk hosts
+- Number of Medium risk hosts
+- Number of High risk hosts
+- Number of Critical risk hosts
+- Most common open ports
+- Most common services
+
+Step 6: HTML report
+Generate a professional dark-theme HTML report.
+
+HTML requirements:
+- No external CDN
+- Embedded CSS only
+- Responsive design
+- Modern dark dashboard style
+- Summary cards
+- Host risk table
+- Open ports table
+- Risk level badges
+- Risk reasons section
+- Recommended next steps section
+- Collapsible host details if possible
+- Clean typography
+- Good spacing
+- Works offline
+
+Step 7: JSON report
+Generate structured JSON with:
+- scan_metadata
+- summary
+- hosts
+- risk_score
+- risk_level
+- risk_reasons
+- open_ports
+- service_details
+- cpe_values
+- recommendations
+
+Step 8: Markdown report
+Generate a clean Markdown report with:
+- Title
+- Scan summary
+- Host list
+- Risk table
+- Detailed host findings
+- Recommended next commands
+- Disclaimer
+
+Step 9: Error handling
+Handle:
+- Missing input file
+- Invalid XML
+- Empty scan
+- No hosts found
+- Permission errors
+- Invalid output path
+
+Step 10: README
+Create a professional README with:
+- Project name
+- Description
+- Features
+- Installation
+- Usage
+- Example Nmap scan command
+- Example output
+- Roadmap
+- Security disclaimer
+- License suggestion
+
+README disclaimer:
+This tool is intended for educational and authorized security testing only. Only scan systems you own or have explicit permission to test.
+
+Step 11: Roadmap section
+Add future roadmap:
+- CVE lookup using CPE
+- Web dashboard
+- Compare two scans
+- PDF export
+- Network graph
+- Screenshot capture for web services
+- Docker support
+- Nessus and Burp import
+
+Step 12: Code quality
+- Use functions.
+- Keep files modular.
+- Add type hints where useful.
+- Add docstrings in English.
+- Avoid overengineering.
+- Keep the code readable for beginners.
+
+Final result:
+The project should be runnable with:
+
+python3 nmaplens.py --input examples/sample_scan.xml
+
+It should create:
+output/report.html
+output/report.json
+output/report.md

@@ -1,0 +1,222 @@
+{
+  "scan_metadata": {
+    "scanner": "nmap",
+    "version": "7.95",
+    "start_time": "2026-05-20 12:00 UTC",
+    "xml_path": "examples/sample_scan.xml"
+  },
+  "hosts": [
+    {
+      "ip_address": "192.168.1.10",
+      "hostname": "gateway.local",
+      "all_hostnames": [
+        "gateway.local"
+      ],
+      "status": "up",
+      "mac_address": "00:11:22:33:44:55",
+      "vendor": "Intel",
+      "os_guess": "Linux 6.x",
+      "open_ports": [
+        {
+          "protocol": "tcp",
+          "port": 22,
+          "service": "ssh",
+          "product": "OpenSSH",
+          "version": "9.6",
+          "extra_info": "protocol 2.0",
+          "cpe_values": [
+            "cpe:/a:openbsd:openssh:9.6"
+          ]
+        },
+        {
+          "protocol": "tcp",
+          "port": 80,
+          "service": "http",
+          "product": "nginx",
+          "version": "1.24.0",
+          "extra_info": "",
+          "cpe_values": [
+            "cpe:/a:nginx:nginx:1.24.0"
+          ]
+        },
+        {
+          "protocol": "tcp",
+          "port": 445,
+          "service": "microsoft-ds",
+          "product": "Samba smbd",
+          "version": "4.18.0",
+          "extra_info": "",
+          "cpe_values": []
+        }
+      ],
+      "service_details": [
+        {
+          "port": 22,
+          "service": "ssh",
+          "product": "OpenSSH",
+          "version": "9.6",
+          "extra_info": "protocol 2.0"
+        },
+        {
+          "port": 80,
+          "service": "http",
+          "product": "nginx",
+          "version": "1.24.0",
+          "extra_info": ""
+        },
+        {
+          "port": 445,
+          "service": "microsoft-ds",
+          "product": "Samba smbd",
+          "version": "4.18.0",
+          "extra_info": ""
+        }
+      ],
+      "cpe_values": [
+        "cpe:/a:openbsd:openssh:9.6",
+        "cpe:/a:nginx:nginx:1.24.0"
+      ],
+      "risk_score": 35,
+      "risk_level": "Medium",
+      "risk_reasons": [
+        "SSH should be restricted to trusted administrative networks.",
+        "HTTP traffic is not encrypted.",
+        "SMB exposure can increase lateral movement risk."
+      ],
+      "recommendations": [
+        "nmap --script ssh2-enum-algos -p22 TARGET",
+        "nmap --script http-title,http-headers,http-methods -p80 TARGET",
+        "nmap --script smb-enum-shares,smb-os-discovery,smb-protocols -p445 TARGET"
+      ]
+    },
+    {
+      "ip_address": "192.168.1.20",
+      "hostname": null,
+      "all_hostnames": [],
+      "status": "up",
+      "mac_address": null,
+      "vendor": null,
+      "os_guess": "Microsoft Windows 10 or 11",
+      "open_ports": [
+        {
+          "protocol": "tcp",
+          "port": 21,
+          "service": "ftp",
+          "product": "vsftpd",
+          "version": "3.0.5",
+          "extra_info": "",
+          "cpe_values": []
+        },
+        {
+          "protocol": "tcp",
+          "port": 23,
+          "service": "telnet",
+          "product": "BusyBox telnetd",
+          "version": "",
+          "extra_info": "",
+          "cpe_values": []
+        },
+        {
+          "protocol": "tcp",
+          "port": 3389,
+          "service": "ms-wbt-server",
+          "product": "Microsoft Terminal Services",
+          "version": "",
+          "extra_info": "",
+          "cpe_values": []
+        }
+      ],
+      "service_details": [
+        {
+          "port": 21,
+          "service": "ftp",
+          "product": "vsftpd",
+          "version": "3.0.5",
+          "extra_info": ""
+        },
+        {
+          "port": 23,
+          "service": "telnet",
+          "product": "BusyBox telnetd",
+          "version": "",
+          "extra_info": ""
+        },
+        {
+          "port": 3389,
+          "service": "ms-wbt-server",
+          "product": "Microsoft Terminal Services",
+          "version": "",
+          "extra_info": ""
+        }
+      ],
+      "cpe_values": [],
+      "risk_score": 65,
+      "risk_level": "High",
+      "risk_reasons": [
+        "FTP may expose credentials if not protected.",
+        "Telnet is exposed and uses clear-text communication.",
+        "RDP should be protected with VPN, MFA, and strict access control."
+      ],
+      "recommendations": [
+        "nmap --script ftp-anon,ftp-syst -p21 TARGET",
+        "nmap -sV -p23 TARGET",
+        "nmap --script rdp-enum-encryption -p3389 TARGET"
+      ]
+    }
+  ],
+  "summary": {
+    "total_hosts": 2,
+    "online_hosts": 2,
+    "total_open_ports": 6,
+    "risk_counts": {
+      "Low": 0,
+      "Medium": 1,
+      "High": 1,
+      "Critical": 0
+    },
+    "most_common_open_ports": [
+      [
+        "22",
+        1
+      ],
+      [
+        "80",
+        1
+      ],
+      [
+        "445",
+        1
+      ],
+      [
+        "21",
+        1
+      ],
+      [
+        "23",
+        1
+      ]
+    ],
+    "most_common_services": [
+      [
+        "ssh",
+        1
+      ],
+      [
+        "http",
+        1
+      ],
+      [
+        "microsoft-ds",
+        1
+      ],
+      [
+        "ftp",
+        1
+      ],
+      [
+        "telnet",
+        1
+      ]
+    ]
+  }
+}
