@@ -12,6 +12,7 @@ All notable changes to this project will be documented in this file.
 - Dockerfile and container usage documentation
 - Simple PDF export with `--pdf`
 - Local web dashboard with `--dashboard`
+- Built-in dashboard network graph for host-to-service visualization
 - Console, JSON, HTML, and Markdown comparison summaries
 - Sample baseline XML and automated tests for scan diffs
 

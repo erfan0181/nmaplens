@@ -210,6 +210,9 @@ class NmapLensTests(unittest.TestCase):
 
         self.assertIn("NmapLens Dashboard", html)
         self.assertIn("Host Explorer", html)
+        self.assertIn("Network Graph", html)
+        self.assertIn('id="network-graph"', html)
+        self.assertIn('fill: "none"', html)
         self.assertIn("const scanData =", html)
         self.assertIn("CVE References", html)
         self.assertIn("Exploit-DB", html)

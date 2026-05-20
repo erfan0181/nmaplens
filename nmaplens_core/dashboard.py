@@ -82,6 +82,98 @@ def build_dashboard_html(scan_data: dict[str, object]) -> str:
       grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
       gap: 16px;
     }}
+    .graph-shell {{
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) 260px;
+      gap: 16px;
+      align-items: start;
+    }}
+    .graph-wrap {{
+      background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(76,201,240,0.05));
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 14px;
+      overflow: auto;
+    }}
+    .graph-legend {{
+      display: grid;
+      gap: 12px;
+    }}
+    .legend-card {{
+      background: var(--panel-alt);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 14px;
+    }}
+    .legend-card h3 {{
+      margin: 0 0 10px;
+      font-size: 1rem;
+    }}
+    .legend-list {{
+      list-style: none;
+      margin: 0;
+      padding: 0;
+      display: grid;
+      gap: 8px;
+    }}
+    .legend-list li {{
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      color: var(--muted);
+      font-size: 0.95rem;
+    }}
+    .swatch {{
+      width: 14px;
+      height: 14px;
+      border-radius: 999px;
+      display: inline-block;
+      border: 1px solid rgba(255,255,255,0.08);
+    }}
+    .graph-note {{
+      color: var(--muted);
+      margin: 0 0 14px;
+    }}
+    #network-graph {{
+      width: 100%;
+      min-width: 760px;
+      height: 520px;
+      display: block;
+    }}
+    .graph-node {{
+      cursor: pointer;
+      transition: opacity 0.18s ease, transform 0.18s ease;
+    }}
+    .graph-node text {{
+      pointer-events: none;
+      fill: var(--text);
+      font-size: 13px;
+      font-weight: 600;
+    }}
+    .graph-node circle,
+    .graph-node rect {{
+      stroke: rgba(255,255,255,0.12);
+      stroke-width: 1.2;
+    }}
+    .graph-edge {{
+      stroke: rgba(159, 176, 195, 0.45);
+      stroke-width: 1.5;
+      transition: opacity 0.18s ease, stroke-width 0.18s ease;
+    }}
+    .graph-node.is-dim,
+    .graph-edge.is-dim {{
+      opacity: 0.18;
+    }}
+    .graph-node.is-active circle,
+    .graph-node.is-active rect {{
+      stroke: var(--accent);
+      stroke-width: 2;
+    }}
+    .graph-edge.is-active {{
+      stroke: var(--accent);
+      stroke-width: 2.6;
+      opacity: 1;
+    }}
     .host-card {{
       background: var(--panel-alt);
       border: 1px solid var(--border);
@@ -115,6 +207,9 @@ def build_dashboard_html(scan_data: dict[str, object]) -> str:
       .hero h1 {{ font-size: 1.55rem; }}
       .wrap {{ width: min(100% - 18px, 1220px); }}
     }}
+    @media (max-width: 980px) {{
+      .graph-shell {{ grid-template-columns: 1fr; }}
+    }}
   </style>
 </head>
 <body>
@@ -140,6 +235,35 @@ def build_dashboard_html(scan_data: dict[str, object]) -> str:
         </select>
       </div>
       <div class="host-grid" id="host-grid"></div>
+    </section>
+
+    <section class="panel">
+      <h2 class="section-title">Network Graph</h2>
+      <p class="graph-note">Click a host or service node to highlight related exposure paths.</p>
+      <div class="graph-shell">
+        <div class="graph-wrap">
+          <svg id="network-graph" viewBox="0 0 980 520" role="img" aria-label="Network exposure graph"></svg>
+        </div>
+        <div class="graph-legend">
+          <div class="legend-card">
+            <h3>Risk Levels</h3>
+            <ul class="legend-list">
+              <li><span class="swatch" style="background:#7ee787"></span> Low</li>
+              <li><span class="swatch" style="background:#f2cc60"></span> Medium</li>
+              <li><span class="swatch" style="background:#ff938a"></span> High</li>
+              <li><span class="swatch" style="background:#ff92a8"></span> Critical</li>
+            </ul>
+          </div>
+          <div class="legend-card">
+            <h3>How To Read</h3>
+            <ul class="legend-list">
+              <li>Rounded blocks are hosts.</li>
+              <li>Circles are grouped services.</li>
+              <li>Lines connect each host to its exposed services.</li>
+            </ul>
+          </div>
+        </div>
+      </div>
     </section>
 
     <section class="panel comparison" id="comparison-panel">
@@ -168,6 +292,8 @@ def build_dashboard_html(scan_data: dict[str, object]) -> str:
     const comparisonPanel = document.getElementById("comparison-panel");
     const comparisonSummary = document.getElementById("comparison-summary");
     const comparisonBody = document.getElementById("comparison-body");
+    const graphSvg = document.getElementById("network-graph");
+    const graphNamespace = "http://www.w3.org/2000/svg";
 
     function escapeHtml(value) {{
       return String(value)
@@ -254,6 +380,226 @@ def build_dashboard_html(scan_data: dict[str, object]) -> str:
       `).join("");
     }}
 
+    function serviceKey(port) {{
+      const service = (port.service || "unknown").trim() || "unknown";
+      return service.toLowerCase();
+    }}
+
+    function serviceLabel(port) {{
+      const service = (port.service || "unknown").trim() || "unknown";
+      return service;
+    }}
+
+    function riskColor(level) {{
+      return {{
+        Low: "#7ee787",
+        Medium: "#f2cc60",
+        High: "#ff938a",
+        Critical: "#ff92a8",
+      }}[level] || "#4cc9f0";
+    }}
+
+    function createSvg(tag, attributes = {{}}, text = "") {{
+      const node = document.createElementNS(graphNamespace, tag);
+      Object.entries(attributes).forEach(([key, value]) => node.setAttribute(key, String(value)));
+      if (text) node.textContent = text;
+      return node;
+    }}
+
+    function buildGraphData() {{
+      const noisyServices = new Set(["msrpc", "ncacn_http", "tcpwrapped"]);
+      const hostNodes = scanData.hosts.map((host, index) => ({{
+        id: `host-${{index}}`,
+        type: "host",
+        label: host.hostname ? `${{host.ip_address}} (${{host.hostname}})` : host.ip_address,
+        shortLabel: host.ip_address,
+        riskLevel: host.risk_level,
+        raw: host,
+      }}));
+      const serviceMap = new Map();
+      const edges = [];
+
+      scanData.hosts.forEach((host, hostIndex) => {{
+        host.open_ports.forEach((port) => {{
+          const normalizedService = (port.service || "unknown").trim().toLowerCase();
+          if (noisyServices.has(normalizedService)) return;
+          const key = serviceKey(port);
+          if (!serviceMap.has(key)) {{
+            serviceMap.set(key, {{
+              id: `service-${{serviceMap.size}}`,
+              type: "service",
+              label: serviceLabel(port),
+              service: normalizedService || "unknown",
+              products: new Set(),
+              ports: [],
+              hosts: new Set(),
+            }});
+          }}
+          const service = serviceMap.get(key);
+          service.ports.push(port.port);
+          service.hosts.add(host.ip_address);
+          if (port.product) service.products.add(port.product);
+          edges.push({{
+            id: `edge-${{hostIndex}}-${{service.id}}-${{port.port}}`,
+            from: `host-${{hostIndex}}`,
+            to: service.id,
+            title: `${{host.ip_address}} -> ${{service.label}} on port ${{port.port}}`,
+          }});
+        }});
+      }});
+
+      const serviceNodes = Array.from(serviceMap.values()).map((service) => ({{
+        ...service,
+        shortLabel: service.label,
+        portList: Array.from(new Set(service.ports)).sort((left, right) => left - right).join(", "),
+        hostCount: service.hosts.size,
+        productList: Array.from(service.products).sort().join(", "),
+      }}));
+
+      return {{ hostNodes, serviceNodes, edges }};
+    }}
+
+    function resetGraphState() {{
+      graphSvg.querySelectorAll(".graph-node, .graph-edge").forEach((node) => {{
+        node.classList.remove("is-active", "is-dim");
+      }});
+    }}
+
+    function attachGraphInteractions() {{
+      const nodes = Array.from(graphSvg.querySelectorAll(".graph-node"));
+      const edges = Array.from(graphSvg.querySelectorAll(".graph-edge"));
+
+      nodes.forEach((node) => {{
+        node.addEventListener("click", () => {{
+          const targetId = node.getAttribute("data-node-id");
+          resetGraphState();
+          nodes.forEach((item) => item.classList.add("is-dim"));
+          edges.forEach((item) => item.classList.add("is-dim"));
+
+          node.classList.remove("is-dim");
+          node.classList.add("is-active");
+
+          edges
+            .filter((edge) => edge.getAttribute("data-from") === targetId || edge.getAttribute("data-to") === targetId)
+            .forEach((edge) => {{
+              edge.classList.remove("is-dim");
+              edge.classList.add("is-active");
+              const from = edge.getAttribute("data-from");
+              const to = edge.getAttribute("data-to");
+              nodes
+                .filter((item) => {{
+                  const nodeId = item.getAttribute("data-node-id");
+                  return nodeId === from || nodeId === to;
+                }})
+                .forEach((item) => {{
+                  item.classList.remove("is-dim");
+                  item.classList.add("is-active");
+                }});
+            }});
+        }});
+      }});
+
+      graphSvg.addEventListener("mouseleave", resetGraphState);
+      graphSvg.addEventListener("dblclick", resetGraphState);
+    }}
+
+    function renderGraph() {{
+      const {{ hostNodes, serviceNodes, edges }} = buildGraphData();
+      graphSvg.innerHTML = "";
+
+      if (!hostNodes.length || !serviceNodes.length) {{
+        const message = createSvg("text", {{ x: 40, y: 80, fill: "#9fb0c3", "font-size": 18 }}, "No graph data available.");
+        graphSvg.appendChild(message);
+        return;
+      }}
+
+      const hostSpacing = 520 / (hostNodes.length + 1);
+      const serviceSpacing = 520 / (serviceNodes.length + 1);
+      const positions = new Map();
+
+      hostNodes.forEach((host, index) => {{
+        positions.set(host.id, {{ x: 210, y: Math.round(hostSpacing * (index + 1)) }});
+      }});
+      serviceNodes.forEach((service, index) => {{
+        positions.set(service.id, {{ x: 760, y: Math.round(serviceSpacing * (index + 1)) }});
+      }});
+
+      edges.forEach((edge) => {{
+        const from = positions.get(edge.from);
+        const to = positions.get(edge.to);
+        const path = createSvg("path", {{
+          d: `M ${{from.x + 86}} ${{from.y}} C 460 ${{from.y}}, 510 ${{to.y}}, ${{to.x - 34}} ${{to.y}}`,
+          class: "graph-edge",
+          fill: "none",
+          "data-from": edge.from,
+          "data-to": edge.to,
+        }});
+        const title = createSvg("title", {{}}, edge.title);
+        path.appendChild(title);
+        graphSvg.appendChild(path);
+      }});
+
+      hostNodes.forEach((host) => {{
+        const pos = positions.get(host.id);
+        const group = createSvg("g", {{
+          class: "graph-node",
+          "data-node-id": host.id,
+          tabindex: 0,
+        }});
+        const rect = createSvg("rect", {{
+          x: pos.x - 86,
+          y: pos.y - 26,
+          rx: 16,
+          ry: 16,
+          width: 172,
+          height: 52,
+          fill: "#162232",
+        }});
+        const accent = createSvg("rect", {{
+          x: pos.x - 86,
+          y: pos.y - 26,
+          rx: 16,
+          ry: 16,
+          width: 9,
+          height: 52,
+          fill: riskColor(host.riskLevel),
+        }});
+        const label = createSvg("text", {{ x: pos.x - 64, y: pos.y + 5 }}, host.shortLabel);
+        const title = createSvg("title", {{}}, `${{host.label}} | Risk: ${{host.riskLevel}}`);
+        group.append(rect, accent, label, title);
+        graphSvg.appendChild(group);
+      }});
+
+      serviceNodes.forEach((service) => {{
+        const pos = positions.get(service.id);
+        const group = createSvg("g", {{
+          class: "graph-node",
+          "data-node-id": service.id,
+          tabindex: 0,
+        }});
+        const circle = createSvg("circle", {{
+          cx: pos.x,
+          cy: pos.y,
+          r: 26,
+          fill: "#203248",
+        }});
+        const label = createSvg("text", {{ x: pos.x + 42, y: pos.y - 2 }}, service.service.toUpperCase());
+        const meta = createSvg("text", {{
+          x: pos.x + 42,
+          y: pos.y + 17,
+          fill: "#9fb0c3",
+          "font-size": 11,
+          "font-weight": 500,
+        }}, `Ports: ${{service.portList}}`);
+        const detail = service.productList ? ` | Products: ${{service.productList}}` : "";
+        const title = createSvg("title", {{}}, `${{service.label}} | Ports: ${{service.portList}} | Hosts: ${{service.hostCount}}${{detail}}`);
+        group.append(circle, label, meta, title);
+        graphSvg.appendChild(group);
+      }});
+
+      attachGraphInteractions();
+    }}
+
     function renderComparison() {{
       const comparison = scanData.comparison;
       if (!comparison) return;
@@ -281,6 +627,7 @@ def build_dashboard_html(scan_data: dict[str, object]) -> str:
 
     renderSummary();
     renderHosts();
+    renderGraph();
     renderComparison();
   </script>
 </body>

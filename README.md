@@ -29,6 +29,7 @@ Nmap XML output is powerful, but it is not always easy to read quickly, especial
 - Compare a new scan against an older baseline
 - Build NVD CVE search references from detected CPE values
 - Launch a local interactive web dashboard
+- Visualize host-to-service exposure in a built-in network graph
 - Produce a summary of common ports and services
 - Use Python standard library only
 
@@ -96,6 +97,12 @@ Start a local dashboard:
 ```bash
 python3 nmaplens.py --input examples/sample_scan.xml --dashboard
 ```
+
+The dashboard includes:
+
+- searchable host cards
+- CVE and Exploit-DB reference links
+- a built-in network graph that maps hosts to exposed services
 
 Custom host and port:
 
