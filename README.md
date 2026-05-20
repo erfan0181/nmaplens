@@ -12,6 +12,7 @@ NmapLens is a beginner-friendly but professional Python command-line tool that r
 
 ![NmapLens host explorer](docs/dashboard-hosts.png)
 ![NmapLens CVE and Exploit-DB references](docs/dashboard-cve-links.png)
+![NmapLens network graph](docs/dashboard-network-graph.png)
 
 ## Why NmapLens
 
