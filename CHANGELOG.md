@@ -1,0 +1,16 @@
+# Changelog
+
+All notable changes to this project will be documented in this file.
+
+## [0.1.0] - 2026-05-20
+
+### Added
+
+- Initial NmapLens CLI implementation
+- Nmap XML parsing for metadata, hosts, ports, services, and CPE values
+- Risk scoring and plain-language risk reasons
+- Recommended follow-up Nmap commands per detected service
+- Offline HTML, JSON, and Markdown report generation
+- Sample scan file and generated example outputs
+- Local test suite with `unittest`
+- GitHub Actions CI workflow

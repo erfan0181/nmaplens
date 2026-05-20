@@ -1,6 +1,16 @@
 # NmapLens
 
+![CI](https://github.com/erfan0181/nmaplens/actions/workflows/ci.yml/badge.svg)
+![Python](https://img.shields.io/badge/python-3.10%2B-blue)
+![License](https://img.shields.io/badge/license-MIT-green)
+
 NmapLens is a beginner-friendly but professional Python command-line tool that reads Nmap XML scan results and generates HTML, JSON, and Markdown security reports.
+
+![NmapLens report preview](docs/report-preview.svg)
+
+## Why NmapLens
+
+Nmap XML output is powerful, but it is not always easy to read quickly, especially for beginners. NmapLens turns raw scan results into a cleaner report with risk levels, plain-language explanations, and useful next-step commands.
 
 ## Features
 
@@ -13,10 +23,18 @@ NmapLens is a beginner-friendly but professional Python command-line tool that r
 - Produce a summary of common ports and services
 - Use Python standard library only
 
+## Quick Start
+
+```bash
+git clone https://github.com/erfan0181/nmaplens.git
+cd nmaplens
+python3 nmaplens.py --input examples/sample_scan.xml --html output/report.html --json output/report.json --markdown output/report.md
+```
+
 ## Installation
 
 ```bash
-git clone https://github.com/your-name/nmaplens.git
+git clone https://github.com/erfan0181/nmaplens.git
 cd nmaplens
 python3 nmaplens.py --help
 ```
@@ -68,6 +86,16 @@ Online hosts: 2
 Total open ports: 6
 Risk counts: Low=0, Medium=1, High=1, Critical=0
 ```
+
+## Reports
+
+NmapLens can generate three report formats:
+
+- `HTML`: offline dark-theme dashboard for quick review
+- `JSON`: structured output for scripting and automation
+- `Markdown`: readable report for notes, Git repos, and knowledge bases
+
+Generated example files are included in the [output](/home/joker/nmaplens/output) directory.
 
 ## Output Files
 

@@ -1,0 +1,58 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="720" viewBox="0 0 1280 720" role="img" aria-labelledby="title desc">
+  <title id="title">NmapLens report preview</title>
+  <desc id="desc">A dark dashboard style preview of the NmapLens HTML report.</desc>
+  <defs>
+    <linearGradient id="bg" x1="0%" x2="100%" y1="0%" y2="100%">
+      <stop offset="0%" stop-color="#0c1624"/>
+      <stop offset="100%" stop-color="#081018"/>
+    </linearGradient>
+    <linearGradient id="card" x1="0%" x2="100%" y1="0%" y2="100%">
+      <stop offset="0%" stop-color="#182535"/>
+      <stop offset="100%" stop-color="#0f1924"/>
+    </linearGradient>
+  </defs>
+  <rect width="1280" height="720" fill="url(#bg)"/>
+  <circle cx="180" cy="80" r="220" fill="#4cc9f0" opacity="0.08"/>
+  <circle cx="1140" cy="60" r="180" fill="#ff4d6d" opacity="0.08"/>
+
+  <rect x="64" y="48" width="1152" height="110" rx="22" fill="#121d2a" stroke="#2b3848"/>
+  <text x="96" y="96" fill="#edf2f7" font-size="34" font-family="Segoe UI, Arial, sans-serif" font-weight="700">NmapLens Report</text>
+  <text x="96" y="128" fill="#9fb0c3" font-size="18" font-family="Segoe UI, Arial, sans-serif">Scanner: nmap 7.95   •   Scan start: 2026-05-20 12:00 UTC</text>
+
+  <g font-family="Segoe UI, Arial, sans-serif">
+    <rect x="64" y="188" width="160" height="110" rx="18" fill="url(#card)" stroke="#2b3848"/>
+    <text x="88" y="225" fill="#9fb0c3" font-size="16">Total Hosts</text>
+    <text x="88" y="272" fill="#edf2f7" font-size="40" font-weight="700">2</text>
+
+    <rect x="244" y="188" width="160" height="110" rx="18" fill="url(#card)" stroke="#2b3848"/>
+    <text x="268" y="225" fill="#9fb0c3" font-size="16">Online Hosts</text>
+    <text x="268" y="272" fill="#edf2f7" font-size="40" font-weight="700">2</text>
+
+    <rect x="424" y="188" width="160" height="110" rx="18" fill="url(#card)" stroke="#2b3848"/>
+    <text x="448" y="225" fill="#9fb0c3" font-size="16">Open Ports</text>
+    <text x="448" y="272" fill="#edf2f7" font-size="40" font-weight="700">6</text>
+
+    <rect x="604" y="188" width="160" height="110" rx="18" fill="url(#card)" stroke="#2b3848"/>
+    <text x="628" y="225" fill="#9fb0c3" font-size="16">High Hosts</text>
+    <text x="628" y="272" fill="#ff938a" font-size="40" font-weight="700">1</text>
+
+    <rect x="784" y="188" width="160" height="110" rx="18" fill="url(#card)" stroke="#2b3848"/>
+    <text x="808" y="225" fill="#9fb0c3" font-size="16">Medium Hosts</text>
+    <text x="808" y="272" fill="#f2cc60" font-size="40" font-weight="700">1</text>
+  </g>
+
+  <rect x="64" y="336" width="1152" height="320" rx="22" fill="#121d2a" stroke="#2b3848"/>
+  <text x="96" y="382" fill="#edf2f7" font-size="28" font-family="Segoe UI, Arial, sans-serif" font-weight="700">Host Findings</text>
+
+  <rect x="96" y="414" width="1088" height="94" rx="16" fill="#182230" stroke="#2b3848"/>
+  <text x="124" y="452" fill="#edf2f7" font-size="22" font-family="Segoe UI, Arial, sans-serif" font-weight="700">192.168.1.10</text>
+  <rect x="315" y="427" width="92" height="28" rx="14" fill="#6b5318"/>
+  <text x="335" y="447" fill="#f2cc60" font-size="14" font-family="Segoe UI, Arial, sans-serif" font-weight="700">MEDIUM</text>
+  <text x="124" y="484" fill="#9fb0c3" font-size="16" font-family="Segoe UI, Arial, sans-serif">22/tcp ssh   •   80/tcp http   •   445/tcp microsoft-ds</text>
+
+  <rect x="96" y="528" width="1088" height="94" rx="16" fill="#182230" stroke="#2b3848"/>
+  <text x="124" y="566" fill="#edf2f7" font-size="22" font-family="Segoe UI, Arial, sans-serif" font-weight="700">192.168.1.20</text>
+  <rect x="315" y="541" width="76" height="28" rx="14" fill="#5b2422"/>
+  <text x="338" y="561" fill="#ff938a" font-size="14" font-family="Segoe UI, Arial, sans-serif" font-weight="700">HIGH</text>
+  <text x="124" y="598" fill="#9fb0c3" font-size="16" font-family="Segoe UI, Arial, sans-serif">21/tcp ftp   •   23/tcp telnet   •   3389/tcp ms-wbt-server</text>
+</svg>
