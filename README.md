@@ -50,6 +50,37 @@ cd nmaplens
 python3 nmaplens.py --help
 ```
 
+## Docker
+
+Build the image:
+
+```bash
+docker build -t nmaplens .
+```
+
+Run against a local XML file:
+
+```bash
+docker run --rm \
+  -v "$(pwd)/examples:/data" \
+  nmaplens \
+  --input /data/sample_scan.xml \
+  --summary-only
+```
+
+Generate reports into a local output directory:
+
+```bash
+docker run --rm \
+  -v "$(pwd)/examples:/data" \
+  -v "$(pwd)/output:/output" \
+  nmaplens \
+  --input /data/sample_scan.xml \
+  --html /output/report.html \
+  --json /output/report.json \
+  --markdown /output/report.md
+```
+
 ## Usage
 
 Basic summary:
@@ -168,7 +199,6 @@ nmaplens/
 - PDF export
 - Network graph
 - Screenshot capture for web services
-- Docker support
 - Nessus and Burp import
 
 ## Security Disclaimer

@@ -1,0 +1,13 @@
+.git
+.github
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.pytest_cache/
+tests/
+docs/
+output/
+CHANGELOG.md
+CONTRIBUTING.md
+README.md
