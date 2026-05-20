@@ -162,6 +162,10 @@ nmaplens/
 
 This tool is intended for educational and authorized security testing only. Only scan systems you own or have explicit permission to test.
 
-## License Suggestion
+## Contributing
 
-MIT
+See [CONTRIBUTING.md](CONTRIBUTING.md) for the development workflow and pull request expectations.
+
+## License
+
+This project is licensed under the MIT License. See [LICENSE](LICENSE).

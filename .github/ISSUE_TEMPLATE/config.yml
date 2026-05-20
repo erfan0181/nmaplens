@@ -1,0 +1,5 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Security questions
+    url: https://github.com/erfan0181/nmaplens/security
+    about: Use GitHub Security Advisories for sensitive security issues when available.
