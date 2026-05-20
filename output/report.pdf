@@ -1,0 +1,176 @@
+%PDF-1.4
+%‚„œ”
+1 0 obj
+<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica >>
+endobj
+2 0 obj
+<< /Length 1459 >>
+stream
+BT
+/F1 10 Tf
+50 760 Td
+14 TL
+(# NmapLens Report) Tj
+T* () Tj
+T* (## Scan Summary) Tj
+T* () Tj
+T* (- Scanner: nmap 7.95) Tj
+T* (- Scan start: 2026-05-20 12:00 UTC) Tj
+T* (- Total hosts: 2) Tj
+T* (- Online hosts: 2) Tj
+T* (- Total open ports: 6) Tj
+T* (- Low risk hosts: 0) Tj
+T* (- Medium risk hosts: 1) Tj
+T* (- High risk hosts: 1) Tj
+T* (- Critical risk hosts: 0) Tj
+T* () Tj
+T* (## Host List) Tj
+T* () Tj
+T* (- 192.168.1.10 \(Medium, score 35\)) Tj
+T* (- 192.168.1.20 \(High, score 65\)) Tj
+T* () Tj
+T* (## Risk Table) Tj
+T* () Tj
+T* (| Host | Status | Risk Score | Risk Level | Open Ports |) Tj
+T* (| --- | --- | ---: | --- | ---: |) Tj
+T* (| 192.168.1.10 | up | 35 | Medium | 3 |) Tj
+T* (| 192.168.1.20 | up | 65 | High | 3 |) Tj
+T* () Tj
+T* (## Detailed Host Findings) Tj
+T* () Tj
+T* (### 192.168.1.10) Tj
+T* () Tj
+T* (- Hostname: gateway.local) Tj
+T* (- MAC address: 00:11:22:33:44:55) Tj
+T* (- Vendor: Intel) Tj
+T* (- OS guess: Linux 6.x) Tj
+T* (- Risk score: 35) Tj
+T* (- Risk level: Medium) Tj
+T* () Tj
+T* (#### Risk Reasons) Tj
+T* () Tj
+T* (- SSH should be restricted to trusted administrative networks.) Tj
+T* (- HTTP traffic is not encrypted.) Tj
+T* (- SMB exposure can increase lateral movement risk.) Tj
+T* () Tj
+T* (#### Open Ports) Tj
+T* () Tj
+T* (- `22/tcp` ssh \(OpenSSH 9.6 protocol 2.0\)) Tj
+T* (  - CPE: cpe:/a:openbsd:openssh:9.6) Tj
+T* (  - NVD CVE search: https://nvd.nist.gov/vuln/search/results?query=cpe%3A/a%3Aopenbsd%3Aopen) Tj
+ET
+endstream
+endobj
+3 0 obj
+<< /Length 2012 >>
+stream
+BT
+/F1 10 Tf
+50 760 Td
+14 TL
+(ssh%3A9.6&search_type=all) Tj
+T* (- `80/tcp` http \(nginx 1.24.0\)) Tj
+T* (  - CPE: cpe:/a:nginx:nginx:1.24.0) Tj
+T* (  - NVD CVE search: https://nvd.nist.gov/vuln/search/results?query=cpe%3A/a%3Anginx%3Anginx%) Tj
+T* (3A1.24.0&search_type=all) Tj
+T* (- `445/tcp` microsoft-ds \(Samba smbd 4.18.0\)) Tj
+T* () Tj
+T* (#### Recommended Next Commands) Tj
+T* () Tj
+T* (- `nmap --script ssh2-enum-algos -p22 192.168.1.10`) Tj
+T* (- `nmap --script http-title,http-headers,http-methods -p80 192.168.1.10`) Tj
+T* (- `nmap --script smb-enum-shares,smb-os-discovery,smb-protocols -p445 192.168.1.10`) Tj
+T* () Tj
+T* (#### CPE and CVE References) Tj
+T* () Tj
+T* (- `cpe:/a:openbsd:openssh:9.6`) Tj
+T* (  - NVD CPE search: https://nvd.nist.gov/products/cpe/search/results?namingFormat=2.3&keywor) Tj
+T* (d=cpe%3A/a%3Aopenbsd%3Aopenssh%3A9.6) Tj
+T* (  - NVD CVE search: https://nvd.nist.gov/vuln/search/results?query=cpe%3A/a%3Aopenbsd%3Aopen) Tj
+T* (ssh%3A9.6&search_type=all) Tj
+T* (- `cpe:/a:nginx:nginx:1.24.0`) Tj
+T* (  - NVD CPE search: https://nvd.nist.gov/products/cpe/search/results?namingFormat=2.3&keywor) Tj
+T* (d=cpe%3A/a%3Anginx%3Anginx%3A1.24.0) Tj
+T* (  - NVD CVE search: https://nvd.nist.gov/vuln/search/results?query=cpe%3A/a%3Anginx%3Anginx%) Tj
+T* (3A1.24.0&search_type=all) Tj
+T* () Tj
+T* (### 192.168.1.20) Tj
+T* () Tj
+T* (- Hostname: N/A) Tj
+T* (- MAC address: N/A) Tj
+T* (- Vendor: N/A) Tj
+T* (- OS guess: Microsoft Windows 10 or 11) Tj
+T* (- Risk score: 65) Tj
+T* (- Risk level: High) Tj
+T* () Tj
+T* (#### Risk Reasons) Tj
+T* () Tj
+T* (- FTP may expose credentials if not protected.) Tj
+T* (- Telnet is exposed and uses clear-text communication.) Tj
+T* (- RDP should be protected with VPN, MFA, and strict access control.) Tj
+T* () Tj
+T* (#### Open Ports) Tj
+T* () Tj
+T* (- `21/tcp` ftp \(vsftpd 3.0.5\)) Tj
+T* (- `23/tcp` telnet \(BusyBox telnetd\)) Tj
+T* (- `3389/tcp` ms-wbt-server \(Microsoft Terminal Services\)) Tj
+T* () Tj
+T* (#### Recommended Next Commands) Tj
+ET
+endstream
+endobj
+4 0 obj
+<< /Length 498 >>
+stream
+BT
+/F1 10 Tf
+50 760 Td
+14 TL
+() Tj
+T* (- `nmap --script ftp-anon,ftp-syst -p21 192.168.1.20`) Tj
+T* (- `nmap -sV -p23 192.168.1.20`) Tj
+T* (- `nmap --script rdp-enum-encryption -p3389 192.168.1.20`) Tj
+T* () Tj
+T* (#### CPE and CVE References) Tj
+T* () Tj
+T* (- No CPE-based CVE references found.) Tj
+T* () Tj
+T* (## Disclaimer) Tj
+T* () Tj
+T* (This tool is intended for educational and authorized security testing only. Only scan) Tj
+T* (systems you own or have explicit permission to test.) Tj
+ET
+endstream
+endobj
+5 0 obj
+<< /Type /Pages /Kids [6 0 R 7 0 R 8 0 R] /Count 3 >>
+endobj
+6 0 obj
+<< /Type /Page /Parent 5 0 R /MediaBox [0 0 612 792] /Resources << /Font << /F1 1 0 R >> >> /Contents 2 0 R >>
+endobj
+7 0 obj
+<< /Type /Page /Parent 5 0 R /MediaBox [0 0 612 792] /Resources << /Font << /F1 1 0 R >> >> /Contents 3 0 R >>
+endobj
+8 0 obj
+<< /Type /Page /Parent 5 0 R /MediaBox [0 0 612 792] /Resources << /Font << /F1 1 0 R >> >> /Contents 4 0 R >>
+endobj
+9 0 obj
+<< /Type /Catalog /Pages 5 0 R >>
+endobj
+xref
+0 10
+0000000000 65535 f 
+0000000015 00000 n 
+0000000085 00000 n 
+0000001596 00000 n 
+0000003660 00000 n 
+0000004209 00000 n 
+0000004278 00000 n 
+0000004404 00000 n 
+0000004530 00000 n 
+0000004656 00000 n 
+trailer
+<< /Size 10 /Root 9 0 R >>
+startxref
+4705
+%%EOF

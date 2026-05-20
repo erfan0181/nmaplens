@@ -20,6 +20,7 @@ Nmap XML output is powerful, but it is not always easy to read quickly, especial
 - Explain risk reasons in plain language
 - Suggest useful next-step Nmap commands
 - Generate offline HTML, JSON, and Markdown reports
+- Export a simple offline PDF report
 - Compare a new scan against an older baseline
 - Build NVD CVE search references from detected CPE values
 - Produce a summary of common ports and services
@@ -30,7 +31,7 @@ Nmap XML output is powerful, but it is not always easy to read quickly, especial
 ```bash
 git clone https://github.com/erfan0181/nmaplens.git
 cd nmaplens
-python3 nmaplens.py --input examples/sample_scan.xml --html output/report.html --json output/report.json --markdown output/report.md
+python3 nmaplens.py --input examples/sample_scan.xml --html output/report.html --json output/report.json --markdown output/report.md --pdf output/report.pdf
 ```
 
 Quick compare run:
@@ -78,7 +79,8 @@ docker run --rm \
   --input /data/sample_scan.xml \
   --html /output/report.html \
   --json /output/report.json \
-  --markdown /output/report.md
+  --markdown /output/report.md \
+  --pdf /output/report.pdf
 ```
 
 ## Usage
@@ -96,7 +98,8 @@ python3 nmaplens.py \
   --input examples/sample_scan.xml \
   --html output/report.html \
   --json output/report.json \
-  --markdown output/report.md
+  --markdown output/report.md \
+  --pdf output/report.pdf
 ```
 
 Summary only:
@@ -157,6 +160,7 @@ NmapLens can generate three report formats:
 - `HTML`: offline dark-theme dashboard for quick review
 - `JSON`: structured output for scripting and automation
 - `Markdown`: readable report for notes, Git repos, and knowledge bases
+- `PDF`: simple shareable text-based export
 
 Generated example files are included in the [output](/home/joker/nmaplens/output) directory.
 
@@ -165,6 +169,7 @@ Generated example files are included in the [output](/home/joker/nmaplens/output
 - `output/report.html`: dark-theme offline dashboard
 - `output/report.json`: structured machine-readable report
 - `output/report.md`: Markdown report for notes and Git repositories
+- `output/report.pdf`: simple shareable PDF export
 
 ## Project Structure
 
@@ -179,11 +184,14 @@ nmaplens/
 ├── output/
 │   ├── report.html
 │   ├── report.json
-│   └── report.md
+│   ├── report.md
+│   └── report.pdf
 └── nmaplens_core/
     ├── __init__.py
     ├── compare.py
+    ├── cve_lookup.py
     ├── parser.py
+    ├── pdf_report.py
     ├── risk.py
     ├── recommendations.py
     ├── html_report.py
@@ -194,9 +202,7 @@ nmaplens/
 
 ## Roadmap
 
-- CVE lookup using CPE
 - Web dashboard
-- PDF export
 - Network graph
 - Screenshot capture for web services
 - Nessus and Burp import

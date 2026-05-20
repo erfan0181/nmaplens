@@ -9,6 +9,7 @@ from pathlib import Path
 from nmaplens_core.compare import build_scan_diff
 from nmaplens_core.cve_lookup import enrich_cpe_references
 from nmaplens_core.parser import parse_nmap_xml
+from nmaplens_core.pdf_report import build_pdf_report
 from nmaplens_core.recommendations import enrich_recommendations
 from nmaplens_core.risk import enrich_risk
 from nmaplens_core.utils import build_summary
@@ -132,6 +133,40 @@ class NmapLensTests(unittest.TestCase):
         references = scan_data["hosts"][0]["cve_references"]
         self.assertTrue(references)
         self.assertIn("nvd.nist.gov", references[0]["nvd_cve_url"])
+
+    def test_pdf_report_starts_with_pdf_header(self) -> None:
+        scan_data = parse_nmap_xml(SAMPLE_SCAN)
+        enrich_risk(scan_data["hosts"])
+        enrich_recommendations(scan_data["hosts"])
+        enrich_cpe_references(scan_data["hosts"])
+        scan_data["summary"] = build_summary(scan_data["hosts"])
+
+        payload = build_pdf_report(scan_data)
+
+        self.assertTrue(payload.startswith(b"%PDF-1.4"))
+
+    def test_cli_generates_pdf_report(self) -> None:
+        with tempfile.TemporaryDirectory() as tmpdir:
+            output_path = Path(tmpdir) / "report.pdf"
+            result = subprocess.run(
+                [
+                    "python3",
+                    str(PROJECT_ROOT / "nmaplens.py"),
+                    "--input",
+                    str(SAMPLE_SCAN),
+                    "--pdf",
+                    str(output_path),
+                    "--summary-only",
+                ],
+                cwd=PROJECT_ROOT,
+                capture_output=True,
+                text=True,
+                check=False,
+            )
+
+            self.assertEqual(result.returncode, 0, msg=result.stderr)
+            self.assertTrue(output_path.exists())
+            self.assertTrue(output_path.read_bytes().startswith(b"%PDF-1.4"))
 
 
 if __name__ == "__main__":

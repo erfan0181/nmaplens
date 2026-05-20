@@ -6,6 +6,7 @@ import sys
 from nmaplens_core.html_report import build_html_report
 from nmaplens_core.json_report import build_json_report
 from nmaplens_core.markdown_report import build_markdown_report
+from nmaplens_core.pdf_report import build_pdf_report
 from nmaplens_core.compare import build_scan_diff
 from nmaplens_core.cve_lookup import enrich_cpe_references
 from nmaplens_core.parser import parse_nmap_xml
@@ -22,6 +23,7 @@ def build_argument_parser() -> argparse.ArgumentParser:
     parser.add_argument("--html", help="Path to write the HTML report")
     parser.add_argument("--json", help="Path to write the JSON report")
     parser.add_argument("--markdown", help="Path to write the Markdown report")
+    parser.add_argument("--pdf", help="Path to write the PDF report")
     parser.add_argument(
         "--baseline",
         help="Path to an older Nmap XML scan file for comparison against the current scan",
@@ -89,6 +91,14 @@ def main() -> int:
             output_path.write_text(build_markdown_report(scan_data), encoding="utf-8")
         except (OSError, ValueError) as exc:
             print(f"Error writing Markdown report: {exc}", file=sys.stderr)
+            return 1
+
+    if args.pdf:
+        try:
+            output_path = ensure_output_path(args.pdf)
+            output_path.write_bytes(build_pdf_report(scan_data))
+        except (OSError, ValueError) as exc:
+            print(f"Error writing PDF report: {exc}", file=sys.stderr)
             return 1
 
     print(format_console_summary(scan_data, verbose=args.verbose, summary_only=args.summary_only))

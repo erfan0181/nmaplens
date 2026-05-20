@@ -10,6 +10,7 @@ All notable changes to this project will be documented in this file.
 - Compare-only mode with `--compare-only`
 - CPE-based NVD CVE reference generation
 - Dockerfile and container usage documentation
+- Simple PDF export with `--pdf`
 - Console, JSON, HTML, and Markdown comparison summaries
 - Sample baseline XML and automated tests for scan diffs
 
