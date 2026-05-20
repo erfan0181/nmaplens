@@ -21,6 +21,7 @@ Nmap XML output is powerful, but it is not always easy to read quickly, especial
 - Suggest useful next-step Nmap commands
 - Generate offline HTML, JSON, and Markdown reports
 - Compare a new scan against an older baseline
+- Build NVD CVE search references from detected CPE values
 - Produce a summary of common ports and services
 - Use Python standard library only
 
@@ -97,6 +98,8 @@ python3 nmaplens.py \
   --compare-only \
   --json output/diff.json
 ```
+
+CPE-based CVE references are added automatically when Nmap reports service CPE values.
 
 ## Example Nmap Scan Command
 

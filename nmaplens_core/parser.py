@@ -107,6 +107,7 @@ def _parse_host(host_node: ET.Element) -> dict[str, object]:
         "risk_level": "Low",
         "risk_reasons": [],
         "recommendations": [],
+        "cve_references": [],
     }
 
 

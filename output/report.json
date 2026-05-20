@@ -26,6 +26,13 @@
           "extra_info": "protocol 2.0",
           "cpe_values": [
             "cpe:/a:openbsd:openssh:9.6"
+          ],
+          "cve_references": [
+            {
+              "cpe": "cpe:/a:openbsd:openssh:9.6",
+              "nvd_cpe_url": "https://nvd.nist.gov/products/cpe/search/results?namingFormat=2.3&keyword=cpe%3A/a%3Aopenbsd%3Aopenssh%3A9.6",
+              "nvd_cve_url": "https://nvd.nist.gov/vuln/search/results?query=cpe%3A/a%3Aopenbsd%3Aopenssh%3A9.6&search_type=all"
+            }
           ]
         },
         {
@@ -37,6 +44,13 @@
           "extra_info": "",
           "cpe_values": [
             "cpe:/a:nginx:nginx:1.24.0"
+          ],
+          "cve_references": [
+            {
+              "cpe": "cpe:/a:nginx:nginx:1.24.0",
+              "nvd_cpe_url": "https://nvd.nist.gov/products/cpe/search/results?namingFormat=2.3&keyword=cpe%3A/a%3Anginx%3Anginx%3A1.24.0",
+              "nvd_cve_url": "https://nvd.nist.gov/vuln/search/results?query=cpe%3A/a%3Anginx%3Anginx%3A1.24.0&search_type=all"
+            }
           ]
         },
         {
@@ -46,7 +60,8 @@
           "product": "Samba smbd",
           "version": "4.18.0",
           "extra_info": "",
-          "cpe_values": []
+          "cpe_values": [],
+          "cve_references": []
         }
       ],
       "service_details": [
@@ -87,6 +102,18 @@
         "nmap --script ssh2-enum-algos -p22 TARGET",
         "nmap --script http-title,http-headers,http-methods -p80 TARGET",
         "nmap --script smb-enum-shares,smb-os-discovery,smb-protocols -p445 TARGET"
+      ],
+      "cve_references": [
+        {
+          "cpe": "cpe:/a:openbsd:openssh:9.6",
+          "nvd_cpe_url": "https://nvd.nist.gov/products/cpe/search/results?namingFormat=2.3&keyword=cpe%3A/a%3Aopenbsd%3Aopenssh%3A9.6",
+          "nvd_cve_url": "https://nvd.nist.gov/vuln/search/results?query=cpe%3A/a%3Aopenbsd%3Aopenssh%3A9.6&search_type=all"
+        },
+        {
+          "cpe": "cpe:/a:nginx:nginx:1.24.0",
+          "nvd_cpe_url": "https://nvd.nist.gov/products/cpe/search/results?namingFormat=2.3&keyword=cpe%3A/a%3Anginx%3Anginx%3A1.24.0",
+          "nvd_cve_url": "https://nvd.nist.gov/vuln/search/results?query=cpe%3A/a%3Anginx%3Anginx%3A1.24.0&search_type=all"
+        }
       ]
     },
     {
@@ -105,7 +132,8 @@
           "product": "vsftpd",
           "version": "3.0.5",
           "extra_info": "",
-          "cpe_values": []
+          "cpe_values": [],
+          "cve_references": []
         },
         {
           "protocol": "tcp",
@@ -114,7 +142,8 @@
           "product": "BusyBox telnetd",
           "version": "",
           "extra_info": "",
-          "cpe_values": []
+          "cpe_values": [],
+          "cve_references": []
         },
         {
           "protocol": "tcp",
@@ -123,7 +152,8 @@
           "product": "Microsoft Terminal Services",
           "version": "",
           "extra_info": "",
-          "cpe_values": []
+          "cpe_values": [],
+          "cve_references": []
         }
       ],
       "service_details": [
@@ -161,7 +191,8 @@
         "nmap --script ftp-anon,ftp-syst -p21 TARGET",
         "nmap -sV -p23 TARGET",
         "nmap --script rdp-enum-encryption -p3389 TARGET"
-      ]
+      ],
+      "cve_references": []
     }
   ],
   "summary": {

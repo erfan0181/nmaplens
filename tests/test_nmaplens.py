@@ -7,6 +7,7 @@ import unittest
 from pathlib import Path
 
 from nmaplens_core.compare import build_scan_diff
+from nmaplens_core.cve_lookup import enrich_cpe_references
 from nmaplens_core.parser import parse_nmap_xml
 from nmaplens_core.recommendations import enrich_recommendations
 from nmaplens_core.risk import enrich_risk
@@ -31,6 +32,7 @@ class NmapLensTests(unittest.TestCase):
         scan_data = parse_nmap_xml(SAMPLE_SCAN)
         enrich_risk(scan_data["hosts"])
         enrich_recommendations(scan_data["hosts"])
+        enrich_cpe_references(scan_data["hosts"])
         summary = build_summary(scan_data["hosts"])
 
         self.assertEqual(scan_data["hosts"][0]["risk_level"], "Medium")
@@ -38,6 +40,7 @@ class NmapLensTests(unittest.TestCase):
         self.assertEqual(summary["total_open_ports"], 6)
         self.assertEqual(summary["risk_counts"]["Medium"], 1)
         self.assertEqual(summary["risk_counts"]["High"], 1)
+        self.assertTrue(scan_data["hosts"][0]["cve_references"])
 
     def test_cli_generates_json_report(self) -> None:
         with tempfile.TemporaryDirectory() as tmpdir:
@@ -64,6 +67,7 @@ class NmapLensTests(unittest.TestCase):
             payload = json.loads(output_path.read_text(encoding="utf-8"))
             self.assertEqual(payload["summary"]["total_hosts"], 2)
             self.assertEqual(payload["hosts"][1]["risk_score"], 65)
+            self.assertIn("cve_references", payload["hosts"][0]["open_ports"][0])
 
     def test_compare_detects_host_and_port_changes(self) -> None:
         baseline_data = parse_nmap_xml(BASELINE_SCAN)
@@ -120,6 +124,14 @@ class NmapLensTests(unittest.TestCase):
             payload = json.loads(output_path.read_text(encoding="utf-8"))
             self.assertTrue(payload["comparison_only"])
             self.assertEqual(payload["comparison"]["added_hosts"], ["192.168.1.20"])
+
+    def test_cpe_lookup_builds_nvd_links(self) -> None:
+        scan_data = parse_nmap_xml(SAMPLE_SCAN)
+        enrich_cpe_references(scan_data["hosts"])
+
+        references = scan_data["hosts"][0]["cve_references"]
+        self.assertTrue(references)
+        self.assertIn("nvd.nist.gov", references[0]["nvd_cve_url"])
 
 
 if __name__ == "__main__":

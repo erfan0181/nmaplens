@@ -8,6 +8,7 @@ All notable changes to this project will be documented in this file.
 
 - Baseline scan comparison with `--baseline`
 - Compare-only mode with `--compare-only`
+- CPE-based NVD CVE reference generation
 - Console, JSON, HTML, and Markdown comparison summaries
 - Sample baseline XML and automated tests for scan diffs
 

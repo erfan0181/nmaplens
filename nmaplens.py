@@ -7,6 +7,7 @@ from nmaplens_core.html_report import build_html_report
 from nmaplens_core.json_report import build_json_report
 from nmaplens_core.markdown_report import build_markdown_report
 from nmaplens_core.compare import build_scan_diff
+from nmaplens_core.cve_lookup import enrich_cpe_references
 from nmaplens_core.parser import parse_nmap_xml
 from nmaplens_core.recommendations import enrich_recommendations
 from nmaplens_core.risk import enrich_risk
@@ -47,6 +48,7 @@ def main() -> int:
         scan_data = parse_nmap_xml(args.input)
         enrich_risk(scan_data["hosts"])
         enrich_recommendations(scan_data["hosts"])
+        enrich_cpe_references(scan_data["hosts"])
         scan_data["summary"] = build_summary(scan_data["hosts"])
         if args.baseline:
             baseline_data = parse_nmap_xml(args.baseline)

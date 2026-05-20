@@ -139,22 +139,34 @@ def _build_host_section(host: dict[str, object]) -> str:
     for port in host["open_ports"]:
         cpes = ", ".join(port["cpe_values"]) if port["cpe_values"] else "N/A"
         details = " ".join(part for part in [port["product"], port["version"], port["extra_info"]] if part).strip() or "N/A"
+        cve_links = "<br>".join(
+            f'<a href="{escape(reference["nvd_cve_url"])}">{escape(reference["cpe"])}</a>'
+            for reference in port.get("cve_references", [])
+        ) or "N/A"
         rows.append(
             "<tr>"
             f"<td>{escape(str(port['port']))}/{escape(str(port['protocol']))}</td>"
             f"<td>{escape(str(port['service']))}</td>"
             f"<td>{escape(details)}</td>"
             f"<td>{escape(cpes)}</td>"
+            f"<td>{cve_links}</td>"
             "</tr>"
         )
     ports_table = (
-        "<table><thead><tr><th>Port</th><th>Service</th><th>Details</th><th>CPE</th></tr></thead>"
-        f"<tbody>{''.join(rows) or '<tr><td colspan=\"4\">No open ports found.</td></tr>'}</tbody></table>"
+        "<table><thead><tr><th>Port</th><th>Service</th><th>Details</th><th>CPE</th><th>CVE References</th></tr></thead>"
+        f"<tbody>{''.join(rows) or '<tr><td colspan=\"5\">No open ports found.</td></tr>'}</tbody></table>"
     )
     reasons = "".join(f"<li>{escape(reason)}</li>" for reason in host["risk_reasons"])
     recommendations = "".join(
         f"<li><code>{escape(command.replace('TARGET', str(host['ip_address'])))}</code></li>"
         for command in host["recommendations"]
+    )
+    cve_references = "".join(
+        "<li>"
+        f"<code>{escape(reference['cpe'])}</code> "
+        f'<a href="{escape(reference["nvd_cve_url"])}">NVD CVE search</a>'
+        "</li>"
+        for reference in host.get("cve_references", [])
     )
     return f"""
 <details>
@@ -170,6 +182,8 @@ def _build_host_section(host: dict[str, object]) -> str:
   <ul>{reasons}</ul>
   <h3>Recommended Next Steps</h3>
   <ul>{recommendations}</ul>
+  <h3>CPE and CVE References</h3>
+  <ul>{cve_references or '<li>No CPE-based CVE references found.</li>'}</ul>
 </details>
 """
 
