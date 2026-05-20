@@ -140,7 +140,9 @@ def _build_host_section(host: dict[str, object]) -> str:
         cpes = ", ".join(port["cpe_values"]) if port["cpe_values"] else "N/A"
         details = " ".join(part for part in [port["product"], port["version"], port["extra_info"]] if part).strip() or "N/A"
         cve_links = "<br>".join(
-            f'<a href="{escape(reference["nvd_cve_url"])}">{escape(reference["cpe"])}</a>'
+            f'{escape(reference["cpe"])} '
+            f'(<a href="{escape(reference.get("cve_search_url", reference["nvd_cve_url"]))}">CVE</a> | '
+            f'<a href="{escape(reference["exploit_db_url"])}">Exploit-DB</a>)'
             for reference in port.get("cve_references", [])
         ) or "N/A"
         rows.append(
@@ -164,7 +166,8 @@ def _build_host_section(host: dict[str, object]) -> str:
     cve_references = "".join(
         "<li>"
         f"<code>{escape(reference['cpe'])}</code> "
-        f'<a href="{escape(reference["nvd_cve_url"])}">NVD CVE search</a>'
+        f'<a href="{escape(reference.get("cve_search_url", reference["nvd_cve_url"]))}">CVE search</a> | '
+        f'<a href="{escape(reference["exploit_db_url"])}">Exploit-DB</a>'
         "</li>"
         for reference in host.get("cve_references", [])
     )

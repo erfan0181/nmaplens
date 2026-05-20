@@ -8,6 +8,7 @@ from pathlib import Path
 
 from nmaplens_core.compare import build_scan_diff
 from nmaplens_core.cve_lookup import enrich_cpe_references
+from nmaplens_core.dashboard import build_dashboard_html
 from nmaplens_core.parser import parse_nmap_xml
 from nmaplens_core.pdf_report import build_pdf_report
 from nmaplens_core.recommendations import enrich_recommendations
@@ -42,6 +43,16 @@ class NmapLensTests(unittest.TestCase):
         self.assertEqual(summary["risk_counts"]["Medium"], 1)
         self.assertEqual(summary["risk_counts"]["High"], 1)
         self.assertTrue(scan_data["hosts"][0]["cve_references"])
+        self.assertIn("nmap -sV -sC -O -p22,80,445 TARGET", scan_data["hosts"][0]["recommendations"])
+        self.assertIn(
+            "nmap --script smb-vuln* -p445 TARGET",
+            scan_data["hosts"][0]["recommendations"],
+        )
+        self.assertIn(
+            "nmap --script http-title,http-headers,http-methods,http-enum -p80 TARGET",
+            scan_data["hosts"][0]["recommendations"],
+        )
+        self.assertLessEqual(len(scan_data["hosts"][0]["recommendations"]), 12)
 
     def test_cli_generates_json_report(self) -> None:
         with tempfile.TemporaryDirectory() as tmpdir:
@@ -133,6 +144,26 @@ class NmapLensTests(unittest.TestCase):
         references = scan_data["hosts"][0]["cve_references"]
         self.assertTrue(references)
         self.assertIn("nvd.nist.gov", references[0]["nvd_cve_url"])
+        self.assertIn("cve.org", references[0]["cve_search_url"])
+        self.assertIn("exploit-db.com", references[0]["exploit_db_url"])
+        self.assertEqual(references[0]["query_type"], "cpe")
+        self.assertIn("OpenBSD%20OpenSSH%209.6", references[0]["cve_search_url"])
+
+    def test_cpe_lookup_falls_back_to_product_query(self) -> None:
+        scan_data = parse_nmap_xml(SAMPLE_SCAN)
+        enrich_cpe_references(scan_data["hosts"])
+
+        references = scan_data["hosts"][1]["cve_references"]
+        self.assertTrue(references)
+        self.assertIn("Microsoft Terminal Services", " ".join(item["label"] for item in references))
+        self.assertEqual(references[0]["query_type"], "keyword")
+
+    def test_cpe_lookup_filters_low_value_references(self) -> None:
+        scan_data = parse_nmap_xml(SAMPLE_SCAN)
+        enrich_cpe_references(scan_data["hosts"])
+
+        labels = [reference["label"] for reference in scan_data["hosts"][0]["cve_references"]]
+        self.assertNotIn("Microsoft Windows", labels)
 
     def test_pdf_report_starts_with_pdf_header(self) -> None:
         scan_data = parse_nmap_xml(SAMPLE_SCAN)
@@ -167,6 +198,23 @@ class NmapLensTests(unittest.TestCase):
             self.assertEqual(result.returncode, 0, msg=result.stderr)
             self.assertTrue(output_path.exists())
             self.assertTrue(output_path.read_bytes().startswith(b"%PDF-1.4"))
+
+    def test_dashboard_html_contains_title(self) -> None:
+        scan_data = parse_nmap_xml(SAMPLE_SCAN)
+        enrich_risk(scan_data["hosts"])
+        enrich_recommendations(scan_data["hosts"])
+        enrich_cpe_references(scan_data["hosts"])
+        scan_data["summary"] = build_summary(scan_data["hosts"])
+
+        html = build_dashboard_html(scan_data)
+
+        self.assertIn("NmapLens Dashboard", html)
+        self.assertIn("Host Explorer", html)
+        self.assertIn("const scanData =", html)
+        self.assertIn("CVE References", html)
+        self.assertIn("Exploit-DB", html)
+        self.assertNotIn("${{", html)
+        self.assertNotIn(":root {{", html)
 
 
 if __name__ == "__main__":

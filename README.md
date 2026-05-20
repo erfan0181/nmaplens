@@ -23,6 +23,7 @@ Nmap XML output is powerful, but it is not always easy to read quickly, especial
 - Export a simple offline PDF report
 - Compare a new scan against an older baseline
 - Build NVD CVE search references from detected CPE values
+- Launch a local interactive web dashboard
 - Produce a summary of common ports and services
 - Use Python standard library only
 
@@ -83,6 +84,24 @@ docker run --rm \
   --pdf /output/report.pdf
 ```
 
+## Web Dashboard
+
+Start a local dashboard:
+
+```bash
+python3 nmaplens.py --input examples/sample_scan.xml --dashboard
+```
+
+Custom host and port:
+
+```bash
+python3 nmaplens.py \
+  --input examples/sample_scan.xml \
+  --dashboard \
+  --dashboard-host 127.0.0.1 \
+  --dashboard-port 8000
+```
+
 ## Usage
 
 Basic summary:
@@ -112,6 +131,12 @@ Verbose console output:
 
 ```bash
 python3 nmaplens.py --input examples/sample_scan.xml --verbose
+```
+
+Run the local dashboard:
+
+```bash
+python3 nmaplens.py --input examples/sample_scan.xml --dashboard
 ```
 
 Compare two scans:
@@ -202,7 +227,6 @@ nmaplens/
 
 ## Roadmap
 
-- Web dashboard
 - Network graph
 - Screenshot capture for web services
 - Nessus and Burp import

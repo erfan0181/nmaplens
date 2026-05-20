@@ -3,6 +3,7 @@ from __future__ import annotations
 import argparse
 import sys
 
+from nmaplens_core.dashboard import serve_dashboard
 from nmaplens_core.html_report import build_html_report
 from nmaplens_core.json_report import build_json_report
 from nmaplens_core.markdown_report import build_markdown_report
@@ -24,6 +25,22 @@ def build_argument_parser() -> argparse.ArgumentParser:
     parser.add_argument("--json", help="Path to write the JSON report")
     parser.add_argument("--markdown", help="Path to write the Markdown report")
     parser.add_argument("--pdf", help="Path to write the PDF report")
+    parser.add_argument(
+        "--dashboard",
+        action="store_true",
+        help="Start a local web dashboard for the current scan data",
+    )
+    parser.add_argument(
+        "--dashboard-host",
+        default="127.0.0.1",
+        help="Host address for the local dashboard server",
+    )
+    parser.add_argument(
+        "--dashboard-port",
+        type=int,
+        default=8000,
+        help="Port for the local dashboard server",
+    )
     parser.add_argument(
         "--baseline",
         help="Path to an older Nmap XML scan file for comparison against the current scan",
@@ -99,6 +116,14 @@ def main() -> int:
             output_path.write_bytes(build_pdf_report(scan_data))
         except (OSError, ValueError) as exc:
             print(f"Error writing PDF report: {exc}", file=sys.stderr)
+            return 1
+
+    if args.dashboard:
+        try:
+            serve_dashboard(scan_data, args.dashboard_host, args.dashboard_port)
+            return 0
+        except OSError as exc:
+            print(f"Error starting dashboard: {exc}", file=sys.stderr)
             return 1
 
     print(format_console_summary(scan_data, verbose=args.verbose, summary_only=args.summary_only))

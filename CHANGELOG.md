@@ -11,6 +11,7 @@ All notable changes to this project will be documented in this file.
 - CPE-based NVD CVE reference generation
 - Dockerfile and container usage documentation
 - Simple PDF export with `--pdf`
+- Local web dashboard with `--dashboard`
 - Console, JSON, HTML, and Markdown comparison summaries
 - Sample baseline XML and automated tests for scan diffs
 

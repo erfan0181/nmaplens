@@ -5,3 +5,17 @@ __pycache__/
 .venv/
 dist/
 build/
+local-data/
+output/test-cve.json
+myscan.xml
+*.xml
+!examples/*.xml
+output/*.html
+output/*.json
+output/*.md
+output/*.pdf
+!output/report.html
+!output/report.json
+!output/report.md
+!output/report.pdf
+*.log

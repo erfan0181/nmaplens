@@ -106,7 +106,8 @@ def build_markdown_report(scan_data: dict[str, object]) -> str:
                     lines.append(f"  - CPE: {', '.join(port['cpe_values'])}")
                 if port.get("cve_references"):
                     for reference in port["cve_references"]:
-                        lines.append(f"  - NVD CVE search: {reference['nvd_cve_url']}")
+                        lines.append(f"  - CVE search: {reference.get('cve_search_url', reference['nvd_cve_url'])}")
+                        lines.append(f"  - Exploit-DB: {reference['exploit_db_url']}")
         else:
             lines.append("- No open ports found.")
 
@@ -118,7 +119,8 @@ def build_markdown_report(scan_data: dict[str, object]) -> str:
             for reference in host["cve_references"]:
                 lines.append(f"- `{reference['cpe']}`")
                 lines.append(f"  - NVD CPE search: {reference['nvd_cpe_url']}")
-                lines.append(f"  - NVD CVE search: {reference['nvd_cve_url']}")
+                lines.append(f"  - CVE search: {reference.get('cve_search_url', reference['nvd_cve_url'])}")
+                lines.append(f"  - Exploit-DB: {reference['exploit_db_url']}")
         else:
             lines.append("- No CPE-based CVE references found.")
         lines.append("")
